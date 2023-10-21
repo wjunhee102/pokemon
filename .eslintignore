@@ -1,0 +1,3 @@
+build/**
+src/index.css
+tailwind.config.js
