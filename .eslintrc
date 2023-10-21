@@ -27,6 +27,7 @@
     "quotes": ["error", "double", {"avoidEscape": true}],
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    "class-methods-use-this": "off"
   }
 }
