@@ -1,47 +1,33 @@
-import axios from "axios";
-import { Pokemon } from "../../entites/pokemon";
-
-function getLanguageContent<T extends object>(dataList: T[], key: string) {
-  const languageList = ["en", "ko"];
-
-  const content = {
-    en: "",
-    ko: "",
-  };
-
-  return dataList.reduce((acc, data: any) => {
-    if (languageList.includes(data.language.name)) {
-      acc[data.language.name as keyof typeof content] = data[key];
-    }
-
-    return acc;
-  }, content);
-}
+import { RestAPI, RestAPIProtocol } from "../../utils/api";
+import { EvolutionChainSchema, PokemonSchema, PokemonSpeciesSchema } from "./schema";
 
 class PokemonAPI {
-  getPokemon(id: number) {
-    return axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
+  constructor(private fetch: RestAPIProtocol = new RestAPI("https://pokeapi.co/api/v2")) {}
+
+  public getPokemon(id: number) {
+    return this.fetch.get({ url: "pokemon", param: `${id}`, validate: PokemonSchema.parse });
   }
 
-  getPokemonSpecies(id: number) {
-    return axios.get(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+  public getPokemonSpecies(id: number) {
+    return this.fetch.get({ url: "pokemon-species", param: `${id}`, validate: PokemonSpeciesSchema.parse });
   }
 
-  async getPokemonInit(id: number): Promise<Pokemon<"en" | "ko">> {
-    const pokemon = await this.getPokemon(id);
-    const pokemonSpec = await this.getPokemonSpecies(id);
+  public getEvolutionChain(id: number) {
+    return this.fetch.get({ url: "evolution-chain", param: `${id}`, validate: EvolutionChainSchema.parse });
+  }
 
-    return {
-      id,
-      imgUrl: pokemon.data.sprites.front_default,
-      originName: pokemonSpec.data.name,
-      weight: pokemon.data.weight,
-      height: pokemon.data.height,
-      color: pokemonSpec.data.color.name,
-      name: getLanguageContent(pokemonSpec.data.names, "name"),
-      genus: getLanguageContent(pokemonSpec.data.genera, "genus"),
-      types: [],
-    };
+  async getPokemonInfo(id: number) {
+    try {
+      const pokemon = await this.getPokemon(id);
+      const pokemonSpec = await this.getPokemonSpecies(id);
+
+      return {
+        pokemon,
+        pokemonSpec,
+      };
+    } catch (error) {
+      return null;
+    }
   }
 }
 

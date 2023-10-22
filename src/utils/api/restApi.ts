@@ -14,7 +14,6 @@ interface ApiProps<T extends (response: any) => any> {
   // eslint-disable-next-line
   data?: any;
   validate?: T;
-  errorCallback?: (error: APIError) => void;
 }
 
 type SetAPIErrorCallback = (error: AxiosError) => APIError;
@@ -29,11 +28,11 @@ export interface RestAPIProtocol {
   fetch: <T extends (response: any) => any>(
     method: "get" | "post" | "delete" | "patch" | "put",
     props: ApiProps<T>,
-  ) => Promise<ReturnType<T> | null>;
+  ) => Promise<ReturnType<T>>;
   // eslint-disable-next-line
   get: <T extends (response: any) => any>(
     props: ApiProps<T>,
-  ) => Promise<ReturnType<T> | null>;
+  ) => Promise<ReturnType<T>>;
 }
 
 class RestAPI implements RestAPIProtocol {
@@ -41,7 +40,7 @@ class RestAPI implements RestAPIProtocol {
 
   constructor(
     protected baseURL: string,
-    { headers, setAPIError }: RestAPIConfig,
+    { headers, setAPIError }: RestAPIConfig = {},
   ) {
     this.ajax = axios.create({
       baseURL,
@@ -83,8 +82,8 @@ class RestAPI implements RestAPIProtocol {
   // eslint-disable-next-line
   public async fetch<T extends (response: any) => any>(
     method: "get" | "post" | "delete" | "patch" | "put",
-    { url, data, param, query, config, validate, errorCallback }: ApiProps<T>,
-  ): Promise<ReturnType<T> | null> {
+    { url, data, param, query, config, validate }: ApiProps<T>,
+  ): Promise<ReturnType<T>> {
     const appliedConfig = { param: query, ...config };
     const appliedURL = param ? `${url}/${param}` : url;
 
@@ -97,9 +96,14 @@ class RestAPI implements RestAPIProtocol {
 
       return response as ReturnType<T>;
     } catch (error) {
-      errorCallback && errorCallback(error as APIError);
+      // eslint-disable-next-line
+      console.error(error);
 
-      return null;
+      if (error instanceof APIError) {
+        return Promise.reject(error);
+      }
+
+      return Promise.reject(new APIError(error));
     }
   }
 
