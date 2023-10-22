@@ -29,6 +29,8 @@
     "react/jsx-props-no-spreading": "off",
     "react/require-default-props": "off",
     "class-methods-use-this": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "no-underscore-dangle": "off"
   }
 }
