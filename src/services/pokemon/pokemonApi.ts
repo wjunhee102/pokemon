@@ -18,7 +18,7 @@ function getLanguageContent<T extends object>(dataList: T[], key: string) {
   }, content);
 }
 
-class PokemonApi {
+class PokemonAPI {
   getPokemon(id: number) {
     return axios.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
   }
@@ -33,7 +33,7 @@ class PokemonApi {
 
     return {
       id,
-      imgUrl: "",
+      imgUrl: pokemon.data.sprites.front_default,
       originName: pokemonSpec.data.name,
       weight: pokemon.data.weight,
       height: pokemon.data.height,
@@ -45,4 +45,4 @@ class PokemonApi {
   }
 }
 
-export default PokemonApi;
+export default PokemonAPI;
