@@ -1,1 +1,1 @@
-export { default as ImmutableObject } from "./immutableObject";
+export { default as ObjectManager } from "./objectManager";

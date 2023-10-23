@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ImmutableObject } from "../../utils/object";
 import { EvolutionInfo, Pokemon, PokemonType } from "../../entites";
 
 interface Pokedex {
@@ -12,13 +11,13 @@ interface SetEvolutionChainActionProps {
 }
 
 interface PokemonState {
-  pokedex: ImmutableObject<Pokedex>;
-  type: ImmutableObject<PokemonType>;
+  pokedex: Pokedex;
+  type: PokemonType;
 }
 
 const initialState: PokemonState = {
-  pokedex: new ImmutableObject({} as Pokedex),
-  type: new ImmutableObject({} as PokemonType),
+  pokedex: {} as Pokedex,
+  type: {} as PokemonType,
 };
 
 const pokemonSlice = createSlice({
@@ -26,14 +25,17 @@ const pokemonSlice = createSlice({
   initialState,
   reducers: {
     setPokemon(state, { payload: pokemon }: PayloadAction<Pokemon>) {
-      state.pokedex = state.pokedex.set(pokemon.originName, pokemon);
+      state.pokedex[pokemon.originName] = pokemon;
     },
     setEvolutionChain(state, { payload: { originName, evolutionChain } }: PayloadAction<SetEvolutionChainActionProps>) {
-      state.pokedex = state.pokedex.edit(originName, { evolutionChain });
+      if (!Object.prototype.hasOwnProperty.call(state.pokedex, originName)) {
+        return;
+      }
+      state.pokedex[originName].evolutionChain = evolutionChain;
     },
     setPokemonType(state, { payload: pokemonType }: PayloadAction<PokemonType>) {
-      const [type, content] = Object.entries(pokemonType)[0];
-      state.type = state.type.set(type, content);
+      const [typeName, content] = Object.entries(pokemonType)[0];
+      state.type[typeName] = content;
     },
   },
 });

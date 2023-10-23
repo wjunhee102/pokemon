@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import languageReducer from "./slices/language";
 import pokemonReducer from "./slices/pokemon";
 
@@ -12,5 +13,8 @@ const store = configureStore({
   },
   devTools: true,
 });
+
+export const useAppSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector;
+export const useAppDispatch = () => useDispatch<typeof store.dispatch>();
 
 export default store;

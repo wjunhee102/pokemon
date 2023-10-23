@@ -1,4 +1,4 @@
-class ImmutableObject<T extends object> {
+class ObjectManager<T extends object> {
   constructor(readonly object: T) {}
 
   has(key: keyof T) {
@@ -20,7 +20,7 @@ class ImmutableObject<T extends object> {
 
     const newObject = { ...this.object, [key]: data };
 
-    return new ImmutableObject(newObject);
+    return newObject as T;
   }
 
   delete(key: keyof T) {
@@ -32,10 +32,10 @@ class ImmutableObject<T extends object> {
 
     delete newObject[key];
 
-    return new ImmutableObject(newObject);
+    return newObject as T;
   }
 
-  edit(key: keyof T, props: Partial<T[keyof T]>) {
+  update(key: keyof T, props: Partial<T[keyof T]>) {
     const data = this.get(key);
 
     if (!data) {
@@ -44,8 +44,8 @@ class ImmutableObject<T extends object> {
 
     const newObject = { ...this.object, [key]: { ...data, ...props } };
 
-    return new ImmutableObject(newObject);
+    return newObject as T;
   }
 }
 
-export default ImmutableObject;
+export default ObjectManager;
