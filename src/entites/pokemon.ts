@@ -1,21 +1,23 @@
 import { LanguageContent } from "./language";
 
-export type PokemonType = "grass" | "poison";
-
 export interface EvolutionInfo {
   originName: string;
 }
 
-export interface Pokemon<T extends string> {
+export interface EvolutionChain {
+  evolutionChain?: EvolutionInfo[];
+}
+
+export interface Pokemon extends EvolutionChain {
   id: number;
   imgUrl: string;
   originName: string;
   height: number;
   weight: number;
   color: string;
+  types: string[];
   name: LanguageContent;
-  types: LanguageContent[];
   genus: LanguageContent;
   flavorText: LanguageContent;
-  evolutionChain?: EvolutionInfo[];
+  evolutionChainId: number | null;
 }
