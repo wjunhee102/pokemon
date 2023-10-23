@@ -35,56 +35,58 @@ function createPokemon(props?: Partial<Pokemon>): Pokemon {
   };
 }
 
-test("set pokemon in pokedex", () => {
-  const initialState: PokemonState = createInitialState();
+describe("pokemon reducer", () => {
+  it("set pokemon in pokedex", () => {
+    const initialState: PokemonState = createInitialState();
 
-  expect(pokemonReducer(initialState, setPokemon(createPokemon()))).toEqual({
-    pokedex: { origin: createPokemon() },
-    type: {},
-  });
-});
-
-test("set evolution chain in pokemon", () => {
-  const initialState: PokemonState = createInitialState({ pokedex: { origin: createPokemon() } });
-
-  const firstState = pokemonReducer(
-    initialState,
-    setEvolutionChain({ originName: "origin", evolutionChain: [{ originName: "next" }] }),
-  );
-
-  expect(firstState).toEqual({
-    pokedex: { origin: createPokemon({ evolutionChain: [{ originName: "next" }] }) },
-    type: {},
+    expect(pokemonReducer(initialState, setPokemon(createPokemon()))).toEqual({
+      pokedex: { origin: createPokemon() },
+      type: {},
+    });
   });
 
-  const secondState = pokemonReducer(
-    firstState,
-    setEvolutionChain({ originName: "origin", evolutionChain: [{ originName: "next" }] }),
-  );
+  it("set evolution chain in pokemon", () => {
+    const initialState: PokemonState = createInitialState({ pokedex: { origin: createPokemon() } });
 
-  expect(firstState.pokedex.origin === secondState.pokedex.origin).toEqual(false);
-});
-
-test("set pokemon type in type", () => {
-  const initialState: PokemonState = createInitialState();
-
-  expect(
-    pokemonReducer(
+    const firstState = pokemonReducer(
       initialState,
-      setPokemonType({
+      setEvolutionChain({ originName: "origin", evolutionChain: [{ originName: "next" }] }),
+    );
+
+    expect(firstState).toEqual({
+      pokedex: { origin: createPokemon({ evolutionChain: [{ originName: "next" }] }) },
+      type: {},
+    });
+
+    const secondState = pokemonReducer(
+      firstState,
+      setEvolutionChain({ originName: "origin", evolutionChain: [{ originName: "next" }] }),
+    );
+
+    expect(firstState.pokedex.origin === secondState.pokedex.origin).toEqual(false);
+  });
+
+  it("set pokemon type in type", () => {
+    const initialState: PokemonState = createInitialState();
+
+    expect(
+      pokemonReducer(
+        initialState,
+        setPokemonType({
+          origin: {
+            en: "en",
+            ko: "ko",
+          },
+        }),
+      ),
+    ).toEqual({
+      pokedex: {},
+      type: {
         origin: {
           en: "en",
           ko: "ko",
         },
-      }),
-    ),
-  ).toEqual({
-    pokedex: {},
-    type: {
-      origin: {
-        en: "en",
-        ko: "ko",
       },
-    },
+    });
   });
 });
