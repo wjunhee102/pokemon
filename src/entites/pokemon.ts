@@ -22,6 +22,6 @@ export interface Pokemon extends EvolutionChain {
   evolutionChainId: number | null;
 }
 
-export interface PokemonTypeName {
+export interface PokemonType {
   [type: string]: LanguageContent;
 }
