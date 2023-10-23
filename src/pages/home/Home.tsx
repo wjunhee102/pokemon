@@ -6,7 +6,7 @@ const pokemonApi = new PokemonApi();
 function Home() {
   useEffect(() => {
     async function getData() {
-      const data = await pokemonApi.getPokemonInit(1);
+      const data = await pokemonApi.getPokemonInfo(1);
 
       console.log(data);
     }

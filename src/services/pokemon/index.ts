@@ -1,3 +1,3 @@
-import PokemonAPI from "./pokemonApi";
+import PokemonService from "./pokemonService";
 
-export const pokemonAPI = new PokemonAPI();
+export const pokemonService = new PokemonService();

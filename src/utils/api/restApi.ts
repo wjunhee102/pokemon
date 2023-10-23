@@ -1,47 +1,13 @@
-import axios, { AxiosError, AxiosHeaders, AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import APIError from "./apiError";
-
-interface URLProps {
-  [p: string]: string | number | undefined;
-}
-
-// eslint-disable-next-line
-interface ApiProps<T extends (response: any) => any> {
-  url: string;
-  config?: AxiosRequestConfig;
-  param?: string;
-  query?: URLProps;
-  // eslint-disable-next-line
-  data?: any;
-  validate?: T;
-  errorCallback?: (error: APIError) => void;
-}
-
-type SetAPIErrorCallback = (error: AxiosError) => APIError;
-
-interface RestAPIConfig {
-  headers?: AxiosHeaders;
-  setAPIError?: SetAPIErrorCallback;
-}
-
-export interface RestAPIProtocol {
-  // eslint-disable-next-line
-  fetch: <T extends (response: any) => any>(
-    method: "get" | "post" | "delete" | "patch" | "put",
-    props: ApiProps<T>,
-  ) => Promise<ReturnType<T> | null>;
-  // eslint-disable-next-line
-  get: <T extends (response: any) => any>(
-    props: ApiProps<T>,
-  ) => Promise<ReturnType<T> | null>;
-}
+import { ApiProps, HttpMethod, RestAPIConfig, RestAPIProtocol, SetAPIErrorCallback } from "./types";
 
 class RestAPI implements RestAPIProtocol {
   private ajax!: AxiosInstance;
 
   constructor(
     protected baseURL: string,
-    { headers, setAPIError }: RestAPIConfig,
+    { headers, setAPIError }: RestAPIConfig = {},
   ) {
     this.ajax = axios.create({
       baseURL,
@@ -82,14 +48,14 @@ class RestAPI implements RestAPIProtocol {
    */
   // eslint-disable-next-line
   public async fetch<T extends (response: any) => any>(
-    method: "get" | "post" | "delete" | "patch" | "put",
-    { url, data, param, query, config, validate, errorCallback }: ApiProps<T>,
-  ): Promise<ReturnType<T> | null> {
-    const appliedConfig = { param: query, ...config };
+    method: HttpMethod,
+    { url, data, param, query, config, validate }: ApiProps<T>,
+    isErrorLog = false,
+  ): Promise<ReturnType<T>> {
     const appliedURL = param ? `${url}/${param}` : url;
 
     try {
-      const response = await this.ajax({ url: appliedURL, method, data, ...appliedConfig });
+      const response = await this.ajax({ url: appliedURL, method, data, params: query, ...config });
 
       if (validate) {
         return validate(response);
@@ -97,15 +63,20 @@ class RestAPI implements RestAPIProtocol {
 
       return response as ReturnType<T>;
     } catch (error) {
-      errorCallback && errorCallback(error as APIError);
+      // eslint-disable-next-line
+      isErrorLog && console.error(error);
 
-      return null;
+      if (error instanceof APIError) {
+        return Promise.reject(error);
+      }
+
+      return Promise.reject(new APIError({ status: 400, message: "validate error" }));
     }
   }
 
   // eslint-disable-next-line
-  public get<T extends (response: any) => any>(props: Omit<ApiProps<T>, "data">) {
-    return this.fetch("get", props);
+  public get<T extends (response: any) => any>(props: Omit<ApiProps<T>, "data">, isErrorLog?: boolean) {
+    return this.fetch("get", props, isErrorLog);
   }
 }
 
