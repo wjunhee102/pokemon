@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { EvolutionInfo, Language, LanguageContent, Pokemon, PokemonType } from "../entites";
-import { setPokemon, setEvolutionChain, useAppDispatch, useAppSelector, setPokemonType } from "../store";
+import { setPokemon, setEvolutionChain, useAppSelector, setPokemonType, useAppDispatch } from "../store";
 
 function getContent(languageContent: LanguageContent, language: Language) {
   if (!Object.prototype.hasOwnProperty.call(languageContent, language)) {
@@ -10,11 +10,8 @@ function getContent(languageContent: LanguageContent, language: Language) {
   return languageContent[language];
 }
 
-export function useGetPokemon(originName: string) {
-  const {
-    language: { currentLanguage },
-    pokemon: { pokedex },
-  } = useAppSelector((state) => state);
+export function useGetPokemon(originName: string, language: Language = "ko") {
+  const { pokedex } = useAppSelector((state) => state.pokemon);
 
   if (!Object.prototype.hasOwnProperty.call(pokedex, originName)) {
     return null;
@@ -25,18 +22,15 @@ export function useGetPokemon(originName: string) {
   const { name, genus, flavorText, ...restPokemon } = pokemon;
 
   return {
-    name: getContent(name, currentLanguage),
-    genus: getContent(genus, currentLanguage),
-    flavorText: getContent(flavorText, currentLanguage),
+    name: getContent(name, language),
+    genus: getContent(genus, language),
+    flavorText: getContent(flavorText, language),
     ...restPokemon,
   };
 }
 
-export function useGetPokemonTypeContent(typeName: string) {
-  const {
-    language: { currentLanguage },
-    pokemon: { type },
-  } = useAppSelector((state) => state);
+export function useGetPokemonTypeContent(typeName: string, language: Language = "ko") {
+  const { type } = useAppSelector((state) => state.pokemon);
 
   if (!Object.prototype.hasOwnProperty.call(type, typeName)) {
     return null;
@@ -44,10 +38,12 @@ export function useGetPokemonTypeContent(typeName: string) {
 
   const typeContent = type[typeName];
 
-  return getContent(typeContent, currentLanguage);
+  return getContent(typeContent, language);
 }
 
-export function useSetPokemon(dispatch: ReturnType<typeof useAppDispatch>) {
+export function useSetPokemon() {
+  const dispatch = useAppDispatch();
+
   return useCallback(
     (pokemon: Pokemon) => {
       dispatch(setPokemon(pokemon));
@@ -56,7 +52,9 @@ export function useSetPokemon(dispatch: ReturnType<typeof useAppDispatch>) {
   );
 }
 
-export function useSetPokemonType(dispatch: ReturnType<typeof useAppDispatch>) {
+export function useSetPokemonType() {
+  const dispatch = useAppDispatch();
+
   return useCallback(
     (pokemonType: PokemonType) => {
       dispatch(setPokemonType(pokemonType));
@@ -70,7 +68,9 @@ interface EvolutionChainInfo {
   evolutionChain: EvolutionInfo[];
 }
 
-export function useSetEvolutionChain(dispatch: ReturnType<typeof useAppDispatch>) {
+export function useSetEvolutionChain() {
+  const dispatch = useAppDispatch();
+
   return useCallback(
     (info: EvolutionChainInfo) => {
       dispatch(setEvolutionChain(info));
