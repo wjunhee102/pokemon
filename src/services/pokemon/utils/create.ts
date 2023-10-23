@@ -69,6 +69,8 @@ function extractEvolutionInfo(evolve: EvolvesToSchemaType | LastEvolvesTo, evolu
 export function createEvolutionInfoList(evolutionChain: EvolutionChainSchemaType): EvolutionInfo[] {
   const evolutionInfoList: EvolutionInfo[] = [];
 
+  evolutionInfoList.push({ originName: evolutionChain.chain.species.name });
+
   evolutionChain.chain.evolves_to.forEach((evolve) => extractEvolutionInfo(evolve, evolutionInfoList));
 
   return evolutionInfoList;

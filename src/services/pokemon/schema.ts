@@ -70,9 +70,7 @@ const EvolvesToSchema = z.object({
 });
 
 export const EvolutionChainSchema = z.object({
-  chain: z.object({
-    evolves_to: z.array(EvolvesToSchema),
-  }),
+  chain: EvolvesToSchema,
 });
 
 export const PokemonTypeInfoSchema = z.object({

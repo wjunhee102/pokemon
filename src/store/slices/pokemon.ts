@@ -10,7 +10,7 @@ interface SetEvolutionChainActionProps {
   evolutionChain: EvolutionInfo[];
 }
 
-interface PokemonState {
+export interface PokemonState {
   pokedex: Pokedex;
   type: PokemonType;
 }
