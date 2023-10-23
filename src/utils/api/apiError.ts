@@ -39,7 +39,8 @@ class APIError {
     return this;
   }
 
-  public setMessage(message?: string) {
+  // eslint-disable-next-line
+  public setMessage(message?: any) {
     if (!message || typeof message !== "string") {
       return this;
     }

@@ -35,7 +35,12 @@ class RestAPI implements RestAPIProtocol {
         }
 
         apiError.setStatus(error.response.status);
-        apiError.setMessage(error.response.statusText);
+
+        if (error.response.data) {
+          apiError.setMessage(error.response.data);
+        } else {
+          apiError.setMessage(error.response.statusText);
+        }
 
         return Promise.reject(apiError);
       },
