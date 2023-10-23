@@ -14,7 +14,7 @@ function getLanguageContent<T extends string>(dataList: RawLanguageContent<T>[],
   const content = { ...LANGUAGE_CONTENT };
 
   return dataList.reduce((acc, data: RawLanguageContent<T>) => {
-    if (LANGUAGE_LIST.includes(data.language.name as Language)) {
+    if (LANGUAGE_LIST.includes(data.language.name as Language) && data[key]) {
       acc[data.language.name as keyof typeof content] = data[key];
     }
 

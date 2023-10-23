@@ -21,3 +21,7 @@ export interface Pokemon extends EvolutionChain {
   flavorText: LanguageContent;
   evolutionChainId: number | null;
 }
+
+export interface PokemonTypeName {
+  [type: string]: LanguageContent;
+}

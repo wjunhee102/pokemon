@@ -10,7 +10,7 @@ const NameUrlSchema = z.object({
   url: z.string(),
 });
 
-export const PokemonSchema = z.object({
+export const BasedPokemonSchema = z.object({
   id: z.number(),
   name: z.string(),
   height: z.number(),
@@ -47,6 +47,7 @@ export const PokemonSpeciesSchema = z.object({
       language: NameUrlSchema,
     }),
   ),
+  evolution_chain: z.object({ url: z.string() }),
 });
 
 const EvolvesToSchema = z.object({
@@ -74,6 +75,32 @@ export const EvolutionChainSchema = z.object({
   }),
 });
 
-export type PokemonSchemaType = z.infer<typeof PokemonSchema>;
+export const PokemonTypeInfoSchema = z.object({
+  name: z.string(),
+  names: z.array(
+    z.object({
+      language: NameUrlSchema,
+      name: z.string(),
+    }),
+  ),
+  pokemon: z.array(
+    z.object({
+      pokemon: NameUrlSchema,
+    }),
+  ),
+});
+
+export const PokemonListSchema = z.object({
+  count: z.number(),
+  next: z.string(),
+  previous: z.string().nullable(),
+  results: z.array(NameUrlSchema),
+});
+
+export type NameUrlSchemaType = z.infer<typeof NameUrlSchema>;
+export type BasedPokemonSchemaType = z.infer<typeof BasedPokemonSchema>;
 export type PokemonSpeciesSchemaType = z.infer<typeof PokemonSpeciesSchema>;
+export type EvolvesToSchemaType = z.infer<typeof EvolvesToSchema>;
 export type EvolutionChainSchemaType = z.infer<typeof EvolutionChainSchema>;
+export type PokemonTypeInfoSchemaType = z.infer<typeof PokemonTypeInfoSchema>;
+export type PokemonListSchemaType = z.infer<typeof PokemonListSchema>;
