@@ -84,11 +84,10 @@ class RestAPI implements RestAPIProtocol {
     method: "get" | "post" | "delete" | "patch" | "put",
     { url, data, param, query, config, validate }: ApiProps<T>,
   ): Promise<ReturnType<T>> {
-    const appliedConfig = { param: query, ...config };
     const appliedURL = param ? `${url}/${param}` : url;
 
     try {
-      const response = await this.ajax({ url: appliedURL, method, data, ...appliedConfig });
+      const response = await this.ajax({ url: appliedURL, method, data, params: query, ...config });
 
       if (validate) {
         return validate(response);
@@ -103,7 +102,7 @@ class RestAPI implements RestAPIProtocol {
         return Promise.reject(error);
       }
 
-      return Promise.reject(new APIError(error));
+      return Promise.reject(new APIError({ status: 400, message: "validate error" }));
     }
   }
 
