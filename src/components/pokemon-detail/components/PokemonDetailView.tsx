@@ -10,7 +10,7 @@ interface PokemonDetailViewProps {
 
 function PokemonDetailView({ name, imgUrl, height, weight, color, genus, flavorText }: PokemonDetailViewProps) {
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center w-full h-auto">
       <h2>{name}</h2>
       <div>
         <img src={imgUrl} alt={name} />

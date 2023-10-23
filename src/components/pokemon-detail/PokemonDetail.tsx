@@ -1,6 +1,5 @@
-import { useGetPokemon, useSetPokemon } from "../../hooks/usePokemon";
+import { usePokemon } from "../../hooks/usePokemon";
 import FetchSuspence from "../fetch-suspence";
-import { pokemonService } from "../../services/pokemon";
 import PokemonDetailView from "./components/PokemonDetailView";
 import PokemonType from "./components/PokemonType";
 import PokemonEvolutionChain from "./components/PokemonEvolutionChain";
@@ -10,22 +9,20 @@ interface PokemonDetailProps {
 }
 
 function PokemonDetail({ originName }: PokemonDetailProps) {
-  const pokemon = useGetPokemon(originName);
-  const setPokemonAction = useSetPokemon();
-  const setPokemon = async () => {
-    const pokemonResult = await pokemonService.getPokemon(originName);
-
-    setPokemonAction(pokemonResult);
-
-    return true;
-  };
+  const [pokemon, fetchAndSetPokemon] = usePokemon(originName);
 
   return (
-    <FetchSuspence fallback={<div>loading</div>} data={pokemon} queryKey={["pokemon", originName]} queryFn={setPokemon}>
+    <FetchSuspence
+      fallback={<div>loading</div>}
+      data={pokemon}
+      queryKey={["pokemon", originName]}
+      queryFn={fetchAndSetPokemon}
+    >
       {({ types, evolutionChainId, evolutionChain, ...restPokemon }) => (
-        <div>
+        <div className="w-full min-h-full">
           <PokemonDetailView {...restPokemon} />
-          <div className="flex justify-start gap-2">
+          <div className="flex justify-center w-full h-auto gap-2">
+            <p>타입:</p>
             {types.map((typeName) => (
               <PokemonType key={typeName} typeName={typeName} />
             ))}

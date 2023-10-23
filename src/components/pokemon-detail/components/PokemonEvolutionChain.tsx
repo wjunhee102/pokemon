@@ -1,34 +1,8 @@
 import { EvolutionInfo } from "../../../entites";
-import { useGetPokemon, useSetEvolutionChain, useSetPokemon } from "../../../hooks/usePokemon";
+import { useSetEvolutionChain } from "../../../hooks/usePokemon";
 import { pokemonService } from "../../../services/pokemon";
 import FetchSuspence from "../../fetch-suspence";
-
-interface PokemonEvolutionProps {
-  evolutionInfo: EvolutionInfo;
-}
-
-function PokemonEvolution({ evolutionInfo: { originName } }: PokemonEvolutionProps) {
-  const pokemon = useGetPokemon(originName);
-  const setPokemonAction = useSetPokemon();
-  const setPokemon = async () => {
-    const pokemonResult = await pokemonService.getPokemon(originName);
-
-    setPokemonAction(pokemonResult);
-
-    return true;
-  };
-
-  return (
-    <FetchSuspence fallback={<div>loading</div>} data={pokemon} queryKey={["pokemon", originName]} queryFn={setPokemon}>
-      {({ name, imgUrl }) => (
-        <div>
-          <img src={imgUrl} alt={name} />
-          <p>{name}</p>
-        </div>
-      )}
-    </FetchSuspence>
-  );
-}
+import PokemonCard from "../../pokemon-card";
 
 interface PokemonEvolutionListProps {
   originName: string;
@@ -54,11 +28,13 @@ function PokemonEvolutionList({ originName, evolutionChainId, evolutionChain }: 
       queryFn={setEvolutionChain}
     >
       {(dataList) => (
-        <div className="flex justify-center">
+        <div>
           <h3>진화정보</h3>
-          {dataList.map((data) => (
-            <PokemonEvolution key={data.originName} evolutionInfo={data} />
-          ))}
+          <div className="flex justify-center gap-2">
+            {dataList.map((data) => (
+              <PokemonCard key={data.originName} originName={data.originName} />
+            ))}
+          </div>
         </div>
       )}
     </FetchSuspence>

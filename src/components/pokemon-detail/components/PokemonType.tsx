@@ -24,7 +24,7 @@ function PokemonType({ typeName }: PokemonTypeProps) {
       queryKey={["pokemon-type", typeName]}
       queryFn={setPokemonType}
     >
-      {(data) => <div>{data}</div>}
+      {(data) => <div className="h-6 leading-6 w-content">{data}</div>}
     </FetchSuspence>
   );
 }

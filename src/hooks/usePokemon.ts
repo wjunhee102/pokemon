@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { EvolutionInfo, Language, LanguageContent, Pokemon, PokemonType } from "../entites";
 import { setPokemon, setEvolutionChain, useAppSelector, setPokemonType, useAppDispatch } from "../store";
+import { pokemonService } from "../services/pokemon";
 
 function getContent(languageContent: LanguageContent, language: Language) {
   if (!Object.prototype.hasOwnProperty.call(languageContent, language)) {
@@ -77,4 +78,18 @@ export function useSetEvolutionChain() {
     },
     [dispatch],
   );
+}
+
+export function usePokemon(originName: string) {
+  const pokemon = useGetPokemon(originName);
+  const setPokemonAction = useSetPokemon();
+  const fetchAndSetPokemon = async () => {
+    const pokemonResult = await pokemonService.getPokemon(originName);
+
+    setPokemonAction(pokemonResult);
+
+    return true;
+  };
+
+  return [pokemon, fetchAndSetPokemon] as const;
 }
