@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { EvolutionInfo, Language, LanguageContent, Pokemon, PokemonType } from "../entites";
 import { setPokemon, setEvolutionChain, useAppSelector, setPokemonType, useAppDispatch } from "../store";
 import { pokemonService } from "../services/pokemon";
@@ -11,8 +11,9 @@ function getContent(languageContent: LanguageContent, language: Language) {
   return languageContent[language];
 }
 
-export function useGetPokemon(originName: string, language: Language = "ko") {
+export function useGetPokemon(originName: string) {
   const { pokedex } = useAppSelector((state) => state.pokemon);
+  const { currentLanguage } = useAppSelector((state) => state.language);
 
   if (!Object.prototype.hasOwnProperty.call(pokedex, originName)) {
     return null;
@@ -23,15 +24,16 @@ export function useGetPokemon(originName: string, language: Language = "ko") {
   const { name, genus, flavorText, ...restPokemon } = pokemon;
 
   return {
-    name: getContent(name, language),
-    genus: getContent(genus, language),
-    flavorText: getContent(flavorText, language),
+    name: getContent(name, currentLanguage),
+    genus: getContent(genus, currentLanguage),
+    flavorText: getContent(flavorText, currentLanguage),
     ...restPokemon,
   };
 }
 
-export function useGetPokemonTypeContent(typeName: string, language: Language = "ko") {
+export function useGetPokemonTypeContent(typeName: string) {
   const { type } = useAppSelector((state) => state.pokemon);
+  const { currentLanguage } = useAppSelector((state) => state.language);
 
   if (!Object.prototype.hasOwnProperty.call(type, typeName)) {
     return null;
@@ -39,7 +41,7 @@ export function useGetPokemonTypeContent(typeName: string, language: Language = 
 
   const typeContent = type[typeName];
 
-  return getContent(typeContent, language);
+  return getContent(typeContent, currentLanguage);
 }
 
 export function useSetPokemon() {
@@ -80,16 +82,26 @@ export function useSetEvolutionChain() {
   );
 }
 
-export function usePokemon(originName: string) {
+export function usePokemon(idOrName: string) {
+  const [originName, setName] = useState(idOrName);
+
   const pokemon = useGetPokemon(originName);
   const setPokemonAction = useSetPokemon();
   const fetchAndSetPokemon = async () => {
-    const pokemonResult = await pokemonService.getPokemon(originName);
+    const pokemonResult = await pokemonService.getPokemon(idOrName);
+
+    if (pokemonResult.originName !== idOrName) {
+      setName(pokemonResult.originName);
+    }
 
     setPokemonAction(pokemonResult);
 
     return true;
   };
+
+  useEffect(() => {
+    setName(idOrName);
+  }, [idOrName]);
 
   return [pokemon, fetchAndSetPokemon] as const;
 }
