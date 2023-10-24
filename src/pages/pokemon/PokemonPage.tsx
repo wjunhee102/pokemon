@@ -3,8 +3,7 @@ import { useEffect } from "react";
 import { pokemonService } from "../../services/pokemon";
 import PokemonList from "../../components/pokemon-list";
 import { Language } from "../../entites";
-import { useChangeLanguage } from "../../hooks/useLanguage";
-import i18n from "../../locales/i18n";
+import BaseTemplate from "../../templates/base";
 
 async function getPokemonList({ pageParam }: { pageParam: number }) {
   const limit = 18;
@@ -18,9 +17,7 @@ interface PokemonPageProps {
   language?: Language;
 }
 
-function PokemonPage({ language }: PokemonPageProps) {
-  const changeLanguage = useChangeLanguage();
-
+function PokemonPage(props: PokemonPageProps) {
   const { data, isLoading, fetchNextPage } = useInfiniteQuery({
     queryKey: ["pokemonList"],
     queryFn: getPokemonList,
@@ -41,20 +38,17 @@ function PokemonPage({ language }: PokemonPageProps) {
     return () => window.removeEventListener("scroll", fetch);
   }, [fetchNextPage]);
 
-  useEffect(() => {
-    if (language) {
-      changeLanguage(language);
-      i18n.changeLanguage(language);
-    }
-  }, [language, changeLanguage]);
-
   return (
-    <div className="w-full h-full overflow-auto">
-      <div className="w-full h-auto">
-        {isLoading && <div>Loading</div>}
-        {!isLoading && data && data.pages.map((page) => <PokemonList key={page.previous} pokemonList={page.results} />)}
+    <BaseTemplate {...props}>
+      <div className="w-full h-full overflow-auto">
+        <div className="w-full h-auto">
+          {isLoading && <div>Loading</div>}
+          {!isLoading &&
+            data &&
+            data.pages.map((page) => <PokemonList key={page.previous} pokemonList={page.results} />)}
+        </div>
       </div>
-    </div>
+    </BaseTemplate>
   );
 }
 
