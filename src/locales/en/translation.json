@@ -4,5 +4,6 @@
   "color": "color", 
   "type": "type",
   "evolutionInfo": "evolution information",
-  "listView": "list view"
+  "listView": "list view",
+  "changeLanguage": "한국어"
 }
