@@ -1,0 +1,8 @@
+{
+  "height": "키",
+  "weight": "몸무게",
+  "color": "색", 
+  "type": "타입",
+  "evolutionInfo": "진화 정보",
+  "listView": "목록 보기"
+}

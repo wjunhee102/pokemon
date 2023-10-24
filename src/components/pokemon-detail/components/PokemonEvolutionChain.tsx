@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { EvolutionInfo } from "../../../entites";
 import { useSetEvolutionChain } from "../../../hooks/usePokemon";
 import { pokemonService } from "../../../services/pokemon";
@@ -19,6 +20,7 @@ function PokemonEvolutionList({ originName, evolutionChainId, evolutionChain }: 
 
     return true;
   };
+  const { t } = useTranslation();
 
   return (
     <FetchSuspence
@@ -29,7 +31,7 @@ function PokemonEvolutionList({ originName, evolutionChainId, evolutionChain }: 
     >
       {(dataList) => (
         <div>
-          <h3>진화정보</h3>
+          <h3>{t("evolutionInfo")}</h3>
           <div className="flex justify-center gap-2">
             {dataList.map((data) => (
               <PokemonCard key={data.originName} originName={data.originName} />
