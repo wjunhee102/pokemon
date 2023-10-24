@@ -2,12 +2,18 @@
 
 이 프로젝트는 포켓몬을 검색하고 포켓몬의 상세정보를 볼 수 있는 사이트입니다.
 
+[데모 사이트](https://wjunhee102.github.io/pokemon/)
+
 ## 실행방법
 
 ```bash
 npm install
 
 npm run start
+
+or
+
+npm run test
 ```
 
 ## 사용된 기술 스택 및 라이브러리
@@ -16,7 +22,6 @@ npm run start
 - Redux
 - React Router
 - React-Query
-- TailwindCSS
 - Zod
 
 ## 프로젝트 구조
@@ -26,7 +31,10 @@ pokemon
 ├─ src
 │  ├─ pages
 │  ├─ components
-│  └─ 
+│  ├─ templates
+│  ├─ services(api)
+│  ├─ hooks
+│  └─ utils
 ├─ package.json
 └─ README.md
 ```
